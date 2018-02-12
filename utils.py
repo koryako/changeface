@@ -37,13 +37,39 @@ def stack_images( images ):
         ).reshape( new_shape )
 
 
+def videoformat(f):
+    if f=='avi':  
+        fourcc = cv2.cv.CV_FOURCC(*'XVID')
+    elif f=='mp4':
+        fourcc = cv2.cv.CV_FOURCC(*'mp4v')
+    elif f=='mpeg':
+        fourcc = cv2.cv.CV_FOURCC(*"MJPG") 
+    else:
+        #fourcc=VideoWriter_fourcc(*"MJPG")
+        fourcc = cv2.cv.CV_FOURCC('M', 'J', 'P', 'G')  
+    return fourcc,f
+        
+#=================  
+#函数名称: video2img 
+#参数说明: 视频文件路径名称,图片路径
+#功能: 视频文件转成jpg图片
+#================= 
 def video2img(videoname,imgroot):
     #获得视频的格式    
     vc=cv2.VideoCapture(videoname)
+    """
+    #读帧  
+    success, frame = videoCapture.read()  
+  
+    while success :  
+        cv2.imshow("Oto Video", frame) #显示  
+        cv2.waitKey(1000/int(fps)) #延迟  
+        videoWriter.write(frame) #写视频帧  
+        success, frame = videoCapture.read() #获取下一帧  
+    """
     #cap = cv2.VideoCapture(0)
     #videoCapture = cv2.VideoCapture('oto.avi')  
     c=1
-    
     #magnet:?xt=urn:btih:598F5888522C860D48629EB8EC267496B4322E70
   
     #获得码率及尺寸  
@@ -67,59 +93,24 @@ def video2img(videoname,imgroot):
         c=c+1
         cv2.waitKey(1) 
     """ 
-    vc.release()  
-    
-def img2video(img_root,name):
-    
+    vc.release() 
+
+#=================  
+#函数名称: img2video
+#参数说明: 图片路径,视频文件名称, 视频帧频率
+#功能: 图片转视频文件
+#================= 
+def img2video(img_root,name,fps=20):
     #from cv2 import VideoWriter,VideoWriter_fourcc,imread,resize 
-    
-    #Edit each frame's appearing time!  
-    fps=20
-    #fourcc = cv2.cv.CV_FOURCC(*'XVID')
-    fourcc = cv2.cv.CV_FOURCC(*'mp4v')
-    #fourcc = cv2.cv.CV_FOURCC(*"MJPG")  
-    #fourcc=VideoWriter_fourcc(*"MJPG")
-    # fourcc = cv2.cv.CV_FOURCC('M', 'J', 'P', 'G')  
-    videoWriter=cv2.VideoWriter(str(name)+".mp4",fourcc,fps,(368,640))  
-  
+    fourcc,f= videoformat('mp4')
+    videoWriter=cv2.VideoWriter(str(name)+"."+f,fourcc,fps,(368,640))  
     im_names=os.listdir(img_root)  
     for im_name in range(1,len(im_names)):
         frame=cv2.imread(img_root+str(im_name)+'.jpg')  
-        print(im_name)
         #frame=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)  
-        
         videoWriter.write(frame)  
-      
     videoWriter.release()  
 
 
-"""
 
-    # -*- coding: utf-8 -*-  
-  
-#=================  
-#File: PyOpenCV.py  
-#Author: Wendy  
-#Date: 2013-12-03  
-#=================  
-  
-#eclipse, python2.7, opencv 2.4.6  
-  
-import cv2  
-  
-
-  
-#指定写视频的格式, I420-avi, MJPG-mp4  
-videoWriter = cv2.VideoWriter('oto_other.mp4', cv2.cv.CV_FOURCC('M', 'J', 'P', 'G'), fps, size)  
-  
-#读帧  
-success, frame = videoCapture.read()  
-  
-while success :  
-    cv2.imshow("Oto Video", frame) #显示  
-    cv2.waitKey(1000/int(fps)) #延迟  
-    videoWriter.write(frame) #写视频帧  
-    success, frame = videoCapture.read() #获取下一帧  
-
-    """
 
